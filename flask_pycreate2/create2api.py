@@ -11,19 +11,17 @@ from __future__ import print_function
 from __future__ import division
 import struct  # there are 2 places that use this ... why?
 import time
-from pycreate2.packets import SensorPacketDecoder
-from pycreate2.packets import SensorPacketDecoder_0
-from pycreate2.packets import SensorPacketDecoder_101
+from .packets import SensorPacketDecoder
+from .packets import SensorPacketDecoder_0
+from .packets import SensorPacketDecoder_101
 
-from pycreate2.createSerial import SerialCommandInterface
-from pycreate2.createMQTT import MQTTCommandInterface
-from pycreate2.createTCP import TCPCommandInterface
-from pycreate2.createUDP import UDPCommandInterface
-from pycreate2.createEcho import EchoCommandInterface
-from pycreate2.OI import OPCODES
-# from pycreate2.OI import calc_query_data_len
-from pycreate2.OI import DRIVE
-
+from .createSerial import SerialCommandInterface
+from .createMQTT import MQTTCommandInterface
+from .createTCP import TCPCommandInterface
+from .createUDP import UDPCommandInterface
+from .createEcho import EchoCommandInterface
+from .OI import OPCODES
+from .OI import DRIVE
 
 # Not sure of the value of these Yet
 # class Fatal(Exception):
