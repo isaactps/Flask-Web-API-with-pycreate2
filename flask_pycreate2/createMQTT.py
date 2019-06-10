@@ -10,7 +10,7 @@ import struct
 import io
 import paho.mqtt.client as mqtt
 
-from pycreate2.fifo import BytesFIFO
+from .fifo import BytesFIFO
 
 class MQTTCommandInterface(object):
 	"""
