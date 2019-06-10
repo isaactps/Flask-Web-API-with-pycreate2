@@ -13,7 +13,7 @@ import string
 import time 
 import sys
 
-from pycreate2.fifo import BytesFIFO 
+from .fifo import BytesFIFO 
 
 class TCPCommandInterface(object):
 	"""
