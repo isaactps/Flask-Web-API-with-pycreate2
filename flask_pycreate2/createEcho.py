@@ -6,12 +6,12 @@
 
 from __future__ import print_function
 from __future__ import division
-from pycreate2.OI import OPCODES
-from pycreate2.OI import OPCODES_STRINGS
-from pycreate2.OI import DRIVE
+from .OI import OPCODES
+from .OI import OPCODES_STRINGS
+from .OI import DRIVE
 import struct
 import io
-from pycreate2.fifo import BytesFIFO
+from .fifo import BytesFIFO
 
 class EchoCommandInterface(object):
 	"""
