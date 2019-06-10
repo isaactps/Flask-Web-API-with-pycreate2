@@ -3,4 +3,3 @@ simplejson
 build_utils
 paho-mqtt
 flask
-thread
