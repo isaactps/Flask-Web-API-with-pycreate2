@@ -10,7 +10,7 @@ Development
 If you wish to develop and submit git-pulls, you can do::
 
 	git clone https://github.com/isaactps/flask-with-pycreate2
-	cd flask-with-pycreate2
+	cd pycreate2
 	pip install -e .
 
 Use
