@@ -7,13 +7,13 @@
 
 from __future__ import print_function
 from setuptools import setup
-from pycreate2.version import __version__ as VERSION
 from build_utils import BuildCommand
 from build_utils import PublishCommand
 from build_utils import BinaryDistribution
 
 
 PACKAGE_NAME = 'flask-with-pycreate2'
+VERSION = '0.0.1'
 BuildCommand.pkg = PACKAGE_NAME
 PublishCommand.pkg = PACKAGE_NAME
 PublishCommand.version = VERSION
