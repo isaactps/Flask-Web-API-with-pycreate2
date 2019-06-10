@@ -1,6 +1,7 @@
 # The MIT License
 #
 # Copyright (c) 2017 Kevin Walchko
+# Copyright (c) 019 Isaac Tan
 
 from __future__ import print_function
 from __future__ import division
