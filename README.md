@@ -16,4 +16,4 @@ If you wish to develop and submit git-pulls, you can do::
 Use
 -------------
 
-Refer to python script Web_Server_ranger.py in the examples folder <https://github.com/isaactps/flask_pycreate2/tree/master/examples> to learn on how to initialise the UDP connections between the Flash-based Web API Server and the mBot Ranger robots as well as the API commands to control the mBot Ranger robots
+Refer to the python script in examples folder <https://github.com/isaactps/flask_pycreate2/tree/master/examples> to learn about initializing the UDP connections between the flask-based Web API Server and each mBot Ranger robot as well as the API commands to control these mBot Ranger robots
