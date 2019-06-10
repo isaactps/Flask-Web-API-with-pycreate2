@@ -82,8 +82,6 @@ def config_bot(device_id):
 
 def read_thread(bot,device_id):
 
-	#global bot
-
 	data_read = ""
 
 	while bot[device_id].logging == True:
