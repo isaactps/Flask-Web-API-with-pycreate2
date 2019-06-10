@@ -11,7 +11,7 @@ import time
 if __name__ == "__main__":
         config = {}
         config["transport"] = 'echo'
-	config["robot"] = 'Ranger'
+	config["robot"] = 'Create2'
 	bot = Create2(config)
 
 	bot.start()
@@ -23,7 +23,7 @@ if __name__ == "__main__":
 		# Packet 100 contains all sensor data.
                 sensor_state = ''
                 try:
-                    sensor_state = bot.get_sensors()
+                    sensor_state = bot.get_sensors() # Only supported for Create2 robot and not Ranger robot
                 except:
                     pass
 
