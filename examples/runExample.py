@@ -10,7 +10,8 @@ import time
 if __name__ == "__main__":
 	# Create a Create2 Bot
         config = {}
-        #config.transport = 'mqtt'
+	config["robot"] = 'Create2'
+        #config[transport] = 'mqtt'
         config["transport"] = 'echo'
         #port = 'mqtt:DA01NX3Z'  # this is the serial port on my iMac
 	# port = '/dev/ttyUSB0'  # this is the serial port on my raspberry pi
