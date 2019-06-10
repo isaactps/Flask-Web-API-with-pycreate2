@@ -12,7 +12,7 @@ from build_utils import PublishCommand
 from build_utils import BinaryDistribution
 
 
-PACKAGE_NAME = 'flask-with-pycreate2'
+PACKAGE_NAME = 'flask_pycreate2'
 VERSION = '0.0.1'
 BuildCommand.pkg = PACKAGE_NAME
 PublishCommand.pkg = PACKAGE_NAME
