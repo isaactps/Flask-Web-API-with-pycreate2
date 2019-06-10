@@ -1,4 +1,4 @@
-# Flask-with-pycreate2
+# flask-with-pycreate2
 This project illustrates the use of a Web API developed using Python Flask to provide an abstraction layer for controlling of various mBot Ranger robots using pycreate API that is developed by Kevin Walchko
 
 Install
