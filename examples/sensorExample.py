@@ -11,10 +11,10 @@ import time
 if __name__ == "__main__":
         config = {}
         config["transport"] = 'echo'
+	config["robot"] = 'Ranger'
 	bot = Create2(config)
 
 	bot.start()
-
 	bot.safe()
 
 	print('Starting ...')
