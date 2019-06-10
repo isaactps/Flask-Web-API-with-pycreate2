@@ -1,10 +1,10 @@
 #!/home/nam01/anaconda3/envs/ipy36/bin/python
 # ----------------------------------------------------------------------------
 # MIT License
-# moves the roomba through a simple sequence
+# moves the mBot ranger through a simple sequence
 
 from __future__ import print_function
-import pycreate2
+import flask_pycreate2
 import time
 
 if __name__ == "__main__":
@@ -34,46 +34,6 @@ if __name__ == "__main__":
 
 	bot.start()
 	bot.safe()
-
-	# define a set of commands for the robot to execute
-	commands = [
-		#['Move_Dist', 125, 40, 'for_dist'],
-		#['Move_Dist', -125, 40, 'backward_dist'],
-		#['stop', 0, 0.2, 'stop'],
-		#['Turn_Angle', 100, 90, 'Rotate_left'],
-		#['Turn_Angle', 100, -90, 'Rotate_right'],
-		#['stop', 0, 0.2, 'stop'],
-		#['forward', 125, 2, 'for'],
-		#['back', -125, 2, 'back'],
-		#['stop', 0, 0.2, 'stop'],
-		#['turn right', 100, 3, 'rite'],
-		#['turn left', 100, 6, 'left'],
-		#['turn right', 100, 3, 'rite'],
-		#['stop', 0, 0.2, 'stop']
-	]
-	
-	# Set of commands to execute
-	for cmd in commands:
-		name, vel, dt, string = cnd
-		if config["robot"] == 'Create2':
-			bot.digit_led_ascii(string)
-		if name in ['forward', 'back', 'stop']:
-			bot.drive_straight(vel)
-			time.sleep(dt)
-		elif name in ['turn left']:
-			bot.drive_turn(vel, 1)
-			time.sleep(dt)
-		elif name in ['turn right']:
-			bot.drive_turn(vel, -1)
-			time.sleep(dt)
-		elif name in ['Move_Dist']:
-			if config["robot"] == 'Ranger':
-				bot.drive_distance_Ranger(dt,vel) # In this case, dt is the distance in inches
-		elif name in ['Turn_Angle']:
-			if config["robot"] == 'Ranger':
-				bot.turn_angle_Ranger(dt,vel) # In this case, dt is the angle in degrees
-		else:
-			raise Exception('invalid movement command')
 
 	while(True):
 
