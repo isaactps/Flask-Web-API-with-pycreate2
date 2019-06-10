@@ -4,7 +4,7 @@
 # moves the roomba through a simple sequence
 
 from __future__ import print_function
-import pycreate2
+import flask_pycreate2
 import time
 
 if __name__ == "__main__":
