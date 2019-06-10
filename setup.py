@@ -40,6 +40,5 @@ setup(
 	keywords=['mBot Ranger', 'pycreate2', 'api', 'flask', 'library', 'robotics', 'robot'],
 	packages=[PACKAGE_NAME],
 	install_requires=open('requirements.txt').readlines(),
-,
 	scripts=[]
 )
