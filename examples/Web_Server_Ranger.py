@@ -60,7 +60,7 @@ def config_bot(device_id):
 						bot[device_id].logging = False # To stop the existing read_thread thread					
 						time.sleep(0.1)
 						bot[device_id] = None
-						bot[device_id] = pycreate2.Create2(config)
+						bot[device_id] = flask_pycreate2.Create2(config)
 						bot[device_id].logging = True						
 						bot[device_id].start()
 						bot[device_id].safe()
@@ -69,7 +69,7 @@ def config_bot(device_id):
 						except:
 							print("Error: unable to start thread id %d" % device_id)
 					else:
-						bot[device_id] = pycreate2.Create2(config)
+						bot[device_id] = flask_pycreate2.Create2(config)
 						bot[device_id].logging = True
 						bot[device_id].start()
 						bot[device_id].safe()
