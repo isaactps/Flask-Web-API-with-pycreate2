@@ -34,8 +34,8 @@ class UDPCommandInterface(object):
 		self.udp.settimeout(self.socket_timeout)
 
 		self.start = time.asctime(time.localtime(time.time()))
-		self.start = self.start.replace(" ", "_")
-		self.start = self.start.replace(":", "-")
+		self.start = self.start.replace(" ","_")
+		self.start = self.start.replace(":","-")
 
 	def __del__(self):
 		"""
