@@ -75,10 +75,8 @@ class UDPCommandInterface(object):
 		self.udp.bind((self.local_ip,self.local_port))
 		"""
 
-<<<<<<< HEAD
+
 		self.robot = robot
-=======
->>>>>>> 67ad2c387d6d45c7a08519e99ad5e0c1c673aa86
 		self.portnumber = 1025
 		self.udp.sendto(self.message.encode(), (self.remote_ip , self.portnumber))
 
