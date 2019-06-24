@@ -66,7 +66,7 @@ class Create2(object):
 			self.SCI.open(config["server_ip_addr"])
 		elif config["transport"] == 'udp':
 			self.SCI = UDPCommandInterface()
-			self.SCI.open(config["server_ip_addr"],config["logfile_name"])
+			self.SCI.open(config["server_ip_addr"],config["logfile_name"],config["robot"])
 		else:
 			self.SCI = SerialCommandInterface()
 			self.SCI.open(config["port"], config["baud"])
@@ -431,7 +431,7 @@ class Create2(object):
 		"""
 
 		speed = self.limit(speed, 0, 255)
-		data = struct.unpack('4B', struct.pack('>2h', speed, angle))
+		data = struct.unpack('4B', struct.pack('>Hh', speed, angle))
 		self.SCI.write(OPCODES.TURN_ANGLE_RANGER, data)
 
 	def drive_distance_Ranger(self, distance, speed=150):
@@ -443,9 +443,8 @@ class Create2(object):
 		"""
 			
 		speed = self.limit(speed, 0, 255)
-		data = struct.unpack('4B', struct.pack('>2h', speed, distance))
+		data = struct.unpack('4B', struct.pack('>Hh', speed, distance))
 		self.SCI.write(OPCODES.DRIVE_DIST_RANGER, data)
-
 
 	def line_follow_Ranger(self):
 		"""
@@ -455,6 +454,17 @@ class Create2(object):
 		"""
 
 		self.SCI.write(OPCODES.LINE_FOLLOW_RANGER)
+
+	def move_ckpt_Ranger(self, checkpoint):
+		"""
+		Line following mode of mBot Ranger
+		Time of operating this mode is determined by main calling acript
+
+		"""
+		
+		checkpoint = self.limit(checkpoint, 0, 255)
+		data = struct.unpack('2B', struct.pack('>H', checkpoint))
+		self.SCI.write(OPCODES.MOVE_CKPT_RANGER, data)
 
 	# ------------------------ LED ----------------------------
 

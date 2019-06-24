@@ -13,7 +13,7 @@ import sys
 
 server_ip_dict = [
     {'id': 0,
-     'address': '192.168.1.104', #'10.0.0.11', #'192.168.1.104' #
+     'address': '10.0.0.9', #'10.0.0.11', #'192.168.1.104' #
      'transport': 'udp'},
     {'id': 1,
      'address': '192.168.1.114',
@@ -22,7 +22,7 @@ server_ip_dict = [
      'address': '192.168.1.136',
      'transport': 'udp'},
 	{'id': 3,
-     'address': '192.168.1.142',
+     'address': '192.168.1.145',
      'transport': 'udp'}
 ]
 
@@ -60,7 +60,7 @@ def config_bot(device_id):
 						bot[device_id].logging = False # To stop the existing read_thread thread					
 						time.sleep(0.1)
 						bot[device_id] = None
-						bot[device_id] = pycreate2.Create2(config)
+						bot[device_id] = flask_pycreate2.Create2(config)
 						bot[device_id].logging = True						
 						bot[device_id].start()
 						bot[device_id].safe()
@@ -69,7 +69,7 @@ def config_bot(device_id):
 						except:
 							print("Error: unable to start thread id %d" % device_id)
 					else:
-						bot[device_id] = pycreate2.Create2(config)
+						bot[device_id] = flask_pycreate2.Create2(config)
 						bot[device_id].logging = True
 						bot[device_id].start()
 						bot[device_id].safe()
@@ -216,8 +216,7 @@ def line_follow(device_id):
 			current_time = time.time()
 
 	return "Request received! " + str(request.form) + ' ID %d' % device_id				
-			
-		
+				
 if __name__ == "__main__":
 
 	app.run(host = '0.0.0.0', port = 5000, threaded = True)
