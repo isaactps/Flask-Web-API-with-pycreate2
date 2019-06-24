@@ -34,8 +34,8 @@ class UDPCommandInterface(object):
 		self.udp.settimeout(self.socket_timeout)
 
 		self.start = time.asctime(time.localtime(time.time()))
-		self.start = self.start.replace(" ", "_")
-		self.start = self.start.replace(":", "-")
+		self.start = self.start.replace(" ","_")
+		self.start = self.start.replace(":","-")
 
 	def __del__(self):
 		"""
@@ -45,7 +45,7 @@ class UDPCommandInterface(object):
 		"""
 		self.close()
 
-	def open(self, server_ip_addr, logfile_name, timeout=1):
+	def open(self, server_ip_addr, logfile_name, robot, timeout=1):
 		"""
 		Opens a serial port to the create.
 
@@ -74,6 +74,7 @@ class UDPCommandInterface(object):
 		self.udp.bind((self.local_ip,self.local_port))
 		"""
 
+		self.robot = robot
 		self.portnumber = 1025
 		self.udp.sendto(self.message.encode(), (self.remote_ip , self.portnumber))
 
@@ -136,12 +137,18 @@ class UDPCommandInterface(object):
 			data, (ip_addr, port) = self.udp.recvfrom(num_bytes)
 			end = time.time()
 
-			rx_msg = "Msg is {}".format(data)
-			print(rx_msg + " " + "at local time " + time.asctime(time.localtime(end)))
+			rx_msg = "Msg is {}".format(data) + " " + "at local time " + time.asctime(time.localtime(end))
+			print(rx_msg)
+			#print(rx_msg + " " + "at local time " + time.asctime(time.localtime(end)))
+			
 			with open(self.logfile_name, 'a') as f:
-				print(rx_msg + " " + "at local time " + time.asctime(time.localtime(end)), file=f)
+				print(rx_msg, file=f)
+				#print(rx_msg + " " + "at local time " + time.asctime(time.localtime(end)), file=f)
 
-			return data
+			if self.robot == 'Ranger':			
+				return rx_msg
+			else:
+				return data
 
 			#If data is not received back from server, print Timed out message
 		except socket.timeout:
