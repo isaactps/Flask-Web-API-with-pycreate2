@@ -46,6 +46,7 @@ class UDPCommandInterface(object):
 		self.close()
 
 	def open(self, server_ip_addr, logfile_name, robot, timeout=1):
+
 		"""
 		Opens a serial port to the create.
 
@@ -74,7 +75,10 @@ class UDPCommandInterface(object):
 		self.udp.bind((self.local_ip,self.local_port))
 		"""
 
+<<<<<<< HEAD
 		self.robot = robot
+=======
+>>>>>>> 67ad2c387d6d45c7a08519e99ad5e0c1c673aa86
 		self.portnumber = 1025
 		self.udp.sendto(self.message.encode(), (self.remote_ip , self.portnumber))
 
@@ -137,6 +141,7 @@ class UDPCommandInterface(object):
 			data, (ip_addr, port) = self.udp.recvfrom(num_bytes)
 			end = time.time()
 
+<<<<<<< HEAD
 			rx_msg = "Msg is {}".format(data) + " " + "at local time " + time.asctime(time.localtime(end))
 			print(rx_msg)
 			#print(rx_msg + " " + "at local time " + time.asctime(time.localtime(end)))
@@ -149,6 +154,14 @@ class UDPCommandInterface(object):
 				return rx_msg
 			else:
 				return data
+=======
+			rx_msg = "Msg is {}".format(data)
+			print(rx_msg + " " + "at local time " + time.asctime(time.localtime(end)))
+			with open(self.logfile_name, 'a') as f:
+				print(rx_msg + " " + "at local time " + time.asctime(time.localtime(end)), file=f)
+
+			return data
+>>>>>>> 67ad2c387d6d45c7a08519e99ad5e0c1c673aa86
 
 			#If data is not received back from server, print Timed out message
 		except socket.timeout:

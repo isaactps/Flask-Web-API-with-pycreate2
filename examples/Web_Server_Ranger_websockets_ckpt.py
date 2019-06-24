@@ -276,5 +276,6 @@ def move_ckpt(device_id):
 		
 if __name__ == "__main__":
 
-	my_socketio.run(app, host = '0.0.0.0', port = 5000, debug = True)
-	#my_socketio.run(app, host = '0.0.0.0', port = 5000)
+	#my_socketio.run(app, host = '0.0.0.0', port = 5000, debug = True)
+	my_socketio.run(app, host = '0.0.0.0', port = 5000)
+
