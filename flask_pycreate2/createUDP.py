@@ -139,7 +139,6 @@ class UDPCommandInterface(object):
 			data, (ip_addr, port) = self.udp.recvfrom(num_bytes)
 			end = time.time()
 
-<<<<<<< HEAD
 			rx_msg = "Msg is {}".format(data) + " " + "at local time " + time.asctime(time.localtime(end))
 			print(rx_msg)
 			#print(rx_msg + " " + "at local time " + time.asctime(time.localtime(end)))
@@ -152,14 +151,7 @@ class UDPCommandInterface(object):
 				return rx_msg
 			else:
 				return data
-=======
-			rx_msg = "Msg is {}".format(data)
-			print(rx_msg + " " + "at local time " + time.asctime(time.localtime(end)))
-			with open(self.logfile_name, 'a') as f:
-				print(rx_msg + " " + "at local time " + time.asctime(time.localtime(end)), file=f)
 
-			return data
->>>>>>> 67ad2c387d6d45c7a08519e99ad5e0c1c673aa86
 
 			#If data is not received back from server, print Timed out message
 		except socket.timeout:
