@@ -15,7 +15,7 @@ import sys
 
 server_ip_dict = [
     {'id': 0,
-     'address': '192.168.1.104', #'10.0.0.14', #'10.0.0.11', #'192.168.1.104', #
+     'address': '10.0.0.14', #'10.0.0.14', #'10.0.0.11', #'192.168.1.104', #
      'transport': 'udp'},
     {'id': 1,
      'address': '192.168.1.114', #'10.0.0.13', #'192.168.1.114', #
@@ -70,12 +70,12 @@ def config_bot(device_id):
 					config["logfile_name"] = 'mBot_Ranger_U_' + str(device_id) + '_'
 
 					if (bot[device_id] is not None):
+						bot[device_id].logging = False # To stop the existing read_thread thread					
+						time.sleep(10.0)
 						bot[device_id].drive_stop()
 						time.sleep(0.1)
 						bot[device_id].SCI.close()
 						time.sleep(0.1)
-						bot[device_id].logging = False # To stop the existing read_thread thread					
-						time.sleep(2.0)
 						bot[device_id] = None
 						bot[device_id] = flask_pycreate2.Create2(config)
 						bot[device_id].logging = True						
