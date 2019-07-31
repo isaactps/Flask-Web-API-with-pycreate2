@@ -14,7 +14,7 @@ MeLineFollower linefollower_9(9);
 MeRGBLed rgbled_0(0, 12);
 Me7SegmentDisplay seg7_6(8);
 
-MeSerial SWSerial(PORT_6);
+//MeSerial SWSerial(PORT_6);
 
 //PN532_SWHSU pn532swhsu(SWSerial);
 //PN532 nfc_reader(pn532swhsu);
@@ -73,32 +73,49 @@ unsigned short Obstacle_ID = 0;
 unsigned char OBSTACLE;
 uint8_t tag_read_success;
 uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 }; // Buffer to store the returned UID
-uint8_t uidLength;                       // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
+uint8_t uidLength = 4;                       // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
 union input_data 
 {
    byte command[8];
    byte indat[8];
 }inp;
 
+enum LF_State {
+  OFF_TRACK, // Both IR detectors on the track
+  RIGHT_OFF, // Right IR detector is off the track
+  LEFT_OFF,  // Left IR detector is off the track
+  ON_TRACK   // Both IR receiver are off the track
+};
+
+enum LF_State LF_status;
+
 uint8_t ckpt_uid[][4] = {
+  {0xF0, 0xFA, 0xFB, 0xFC},
   {0xE7, 0xE7, 0x08, 0xB6},
   {0xE7, 0x3B, 0x09, 0xB6},
   {0xF7, 0xEC, 0x09, 0xB6},
   {0xA7, 0x37, 0x09, 0xB6},
   {0x13, 0x32, 0x5F, 0x1B},
   {0x13, 0x26, 0x7F, 0x1B},
-
   {0x5D, 0x52, 0x62, 0x5B},
   {0xED, 0x0B, 0xF9, 0xA3},
   {0x5D, 0x17, 0xBF, 0xA3},
   {0x3D, 0xFD, 0xF8, 0xA3},
   {0xAD, 0x6C, 0xF1, 0xA3},
   {0x31, 0xDE, 0x48, 0x1E},
-
   {0xCD, 0xEC, 0x9D, 0x5B},
   {0x7D, 0x28, 0x18, 0x75},
   {0xED, 0x54, 0x63, 0x5B},
-  {0x11, 0xD1, 0x54, 0x1E}  
+  {0x11, 0xD1, 0x54, 0x1E},
+  {0x29, 0xF8, 0xF2, 0x62},
+  {0x79, 0x2B, 0x3B, 0xEA},
+  {0x89, 0xCE, 0x3C, 0xEA},
+  {0x82, 0x04, 0x67, 0x6F},
+  {0xF2, 0x8B, 0x5C, 0x6F},
+  {0x02, 0x7F, 0x5F, 0x6F},
+  {0x99, 0x18, 0x39, 0xEA},
+  {0x02, 0xBF, 0x5B, 0x6F},
+  {0x69, 0x83, 0xCD, 0xEB}
   
 };
 
@@ -237,23 +254,27 @@ void RightSquare(void)
 void LineFollowing(void)
 {
   if(linefollower_9.readSensors() == 3.000000){
+    LF_status = ON_TRACK;
     move(1,50/100.0*255);
     Line_Fail_Flag = false;
   }
 
   if(linefollower_9.readSensors() == 2.000000){
+    LF_status = RIGHT_OFF;
     Encoder_1.setTarPWM(-1*50/100.0*255);
     Encoder_2.setTarPWM(0/100.0*255);
     Line_Fail_Flag = false;
   }
 
   if(linefollower_9.readSensors() == 1.000000){
+    LF_status = LEFT_OFF;
     Encoder_1.setTarPWM(-1*0/100.0*255);
     Encoder_2.setTarPWM(50/100.0*255);
     Line_Fail_Flag = false;
   }
 
   if(linefollower_9.readSensors() == 0.000000){
+    LF_status = OFF_TRACK;
     move(2,35/100.0*255);
     if(Line_Fail_Flag == false){
       Line_Fail_Flag = true;
@@ -315,7 +336,8 @@ void _loop(){
 void setup(){
     
     Serial.begin(115200);
-    SWSerial.begin(115200);
+    //SWSerial.begin(115200);
+    Serial3.begin(115200);
     
     attachInterrupt(Encoder_1.getIntNum(), isr_process_encoder1, RISING);
     Encoder_1.setPulse(9);
@@ -345,6 +367,7 @@ void setup(){
     KeepAliveTime = 0;
     OBSTACLE = 0;
     Obstacle_ID = 0;
+    LF_status = ON_TRACK;
     Initialize();
     
     nfc_reader.begin();
@@ -420,38 +443,75 @@ void loop(){
     }
 
     if(KeepAliveFlag == true){
-      SWSerial.println("Link Alive");
+      Serial3.print("Link Alive");
       KeepAliveFlag = false;
     }
 
     curr_tagTime = millis();
-    if ((curr_tagTime - prev_tagTime) >= 40) {
+    if (((curr_tagTime - prev_tagTime) >= 40) && (LF_status != OFF_TRACK)) {
       prev_tagTime = curr_tagTime;
       //StopMoving();
       tag_read_success = 0;
+      for (int i=0; i < uidLength; i++){
+        uid[i] = 0x00;
+      }
+
       tag_read_success = nfc_reader.readPassiveTargetID(PN532_MIFARE_ISO14443A, &uid[0], &uidLength, 25);
       if (tag_read_success) {
 
         StopMoving();
-        SWSerial.print("Tag ID");
+        Serial3.print("Tag ID");
         for (uint8_t i=0; i < uidLength; i++) 
         {
-          SWSerial.print(" 0x");SWSerial.print(uid[i], HEX); 
+          Serial3.print(" 0x");Serial3.print(uid[i], HEX); 
         }
-        SWSerial.print(" at time ");
-        SWSerial.println(currentTime);
-        Forward(4,rpm);
+        Serial3.print(" at time ");
+        Serial3.print(currentTime);
+        Forward(5,rpm);
+
+        int count_1 = 1;
+        double swing_step = 10.0;
+        double swing_angle = 0.0;
+
+        while(true) {
+          if(linefollower_9.readSensors() == 3.000000){
+            break;
+          }
+          else if(linefollower_9.readSensors() == 2.000000){
+            TurnLeft(swing_step,rpm);
+          }
+          else if(linefollower_9.readSensors() == 1.000000){
+            TurnRight(swing_step,rpm);
+          }
+          else if(linefollower_9.readSensors() == 0.000000){
+            swing_angle = pow(-1,count_1)*(count_1*swing_step);
+            if (swing_angle >= 0){
+              TurnLeft(swing_angle,rpm);
+            }
+            else{
+              TurnRight(swing_angle*-1.0,rpm);
+            }
+            count_1 = count_1 + 1;
+          }
+        }
 
         if(Ckpt_Flag == true){
-          if(memcmp( (const void *)ckpt_uid[cmd_ckpt], (const void *)uid, sizeof(ckpt_uid[cmd_ckpt])) == 0)
+          //if(memcmp( (const void *)ckpt_uid[cmd_ckpt], (const void *)uid, sizeof(ckpt_uid[cmd_ckpt])) == 0)
+          if(memcmp( (const void *)ckpt_uid[cmd_ckpt], (const void *)uid, 4) == 0)
           {
             StopMoving();
             LineFlag = false;
             Ckpt_Flag = false;
-            SWSerial.println("Checkpoint arrived");
+
+            _delay(1.0);
+            
+            Serial3.print("Checkpoint arrived :");
+            for (uint8_t i=0; i < uidLength; i++) 
+            {
+              Serial3.print(" 0x");Serial3.print(uid[i], HEX); 
+            }
           }
         }
-        //_delay(0.2);
       }
     }
     
@@ -463,10 +523,10 @@ void loop(){
       //  Obstacle_ID = 1;
       //}
       currentTime = millis()/1000 - lastTime;
-      SWSerial.print("Obstacle detected");
-      //SWSerial.print(Obstacle_ID);
-      SWSerial.print(" at time ");
-      SWSerial.println(currentTime);
+      Serial3.print("Obstacle detected");
+      //Serial3.print(Obstacle_ID);
+      Serial3.print(" at time ");
+      Serial3.print(currentTime);
       StopMoving();
       _delay(2.0);
     }
@@ -478,7 +538,7 @@ void loop(){
       OBSTACLE = 0;      
     }
     
-    if(SWSerial.available())
+    if(Serial3.available())
     {
       int index = 0;
 
@@ -486,16 +546,16 @@ void loop(){
         inp.indat[i] = 0x00;
       }
    
-      while (SWSerial.available() > 0){
-            inp.indat[index] = SWSerial.read();
+      while (Serial3.available() > 0){
+            inp.indat[index] = Serial3.read();
             index ++;
             if (index == 8) {
               break;
             }
       }
       
-      while (SWSerial.available() > 0){
-        SWSerial.read();
+      while (Serial3.available() > 0){
+        Serial3.read();
         _delay(0.0015);
       }
       
@@ -529,8 +589,8 @@ void loop(){
                     LeftFlag = false;                      
                     LineFlag = false;
                     Ckpt_Flag = false;                                          
-                    SWSerial.print("AcK RX ");
-                    SWSerial.print(inp.command[0],HEX);
+                    Serial3.print("AcK RX ");
+                    Serial3.print(inp.command[0],HEX);
                     break;
 
         case(0xCA): low_speed = (inp.command[2] & 0x00FF); //Turn Angle command 202
@@ -558,8 +618,8 @@ void loop(){
                     LeftFlag = false;                      
                     LineFlag = false;
                     Ckpt_Flag = false;                                          
-                    SWSerial.print("AcK RX ");
-                    SWSerial.print(inp.command[0],HEX);
+                    Serial3.print("AcK RX ");
+                    Serial3.print(inp.command[0],HEX);
                     break;
     
         case(0x89): low_speed = (inp.command[2] & 0x00FF); //Drive command 137
@@ -628,8 +688,8 @@ void loop(){
                         Ckpt_Flag = false;                                          
                     }
                     
-                    SWSerial.print("AcK RX ");
-                    SWSerial.print(inp.command[0],HEX);
+                    Serial3.print("AcK RX ");
+                    Serial3.print(inp.command[0],HEX);
                     break;
 
         case(0xCB): LineFlag = true; //Line Following command 203
@@ -639,8 +699,8 @@ void loop(){
                     ReverseFlag = false;
                     RightFlag = false;
                     LeftFlag = false;
-                    SWSerial.print("AcK RX ");
-                    SWSerial.print(inp.command[0],HEX);
+                    Serial3.print("AcK RX ");
+                    Serial3.print(inp.command[0],HEX);
                     break;
                            
         case(0xCC): low_ckpt = (inp.command[2] & 0x00FF); //Move Checkpoint command 204
@@ -658,8 +718,10 @@ void loop(){
                     ReverseFlag = false;
                     RightFlag = false;
                     LeftFlag = false;
-                    SWSerial.print("AcK RX ");
-                    SWSerial.print(inp.command[0],HEX);
+                    Serial3.print("AcK RX ");
+                    Serial3.print(inp.command[0],HEX);
+                    Serial3.print(" Ckpt ");
+                    Serial3.print(cmd_ckpt,DEC);
                     break;
                            
         default:    break;
@@ -690,10 +752,10 @@ void loop(){
       LineFollowing();
     
       if(Line_Fail_Flag == true){
-        if ((millis()/1000 - Line_Fail_Timer) >= 2.0){
+        if ((millis()/1000 - Line_Fail_Timer) >= 10.0){
           Line_Fail_Timer = millis()/1000;
-          SWSerial.println("Line Following lost track");
-          TurnRight(15,rpm);
+          Serial3.println("Line Following lost track");
+          TurnRight(5,rpm);
         }
       }
     }
