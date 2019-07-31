@@ -15,13 +15,13 @@ import sys
 
 server_ip_dict = [
     {'id': 0,
-     'address': '10.0.0.14', #'10.0.0.14', #'10.0.0.11', #'192.168.1.104', #
+     'address': '10.0.0.11', #'10.0.0.14', #'10.0.0.11', #'192.168.1.104', #
      'transport': 'udp'},
     {'id': 1,
-     'address': '192.168.1.114', #'10.0.0.13', #'192.168.1.114', #
+     'address': '10.0.0.14', #'10.0.0.13', #'192.168.1.114', #
      'transport': 'udp'},
 	{'id': 2,
-     'address': '192.168.1.136',
+     'address': '10.0.0.8', #'192.168.1.136',
      'transport': 'udp'},
 	{'id': 3,
      'address': '192.168.1.145',
@@ -126,7 +126,9 @@ def read_thread(bot,device_id):
 		try:
 			data_read = bot[device_id].SCI.read(bot[device_id].SCI.buffersize)
 			if(data_read != -1):
-				send_message(str(data_read) + ": Id %d" % device_id)
+				if "Link Alive" not in data_read:
+					send_message(str(data_read) + ": Id %d" % device_id)
+
 		except:
 			print("Error in read_thread Id %d" % device_id)
 			
